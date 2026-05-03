@@ -1,34 +1,28 @@
 import psutil
 
-'''
-[x] Import psutil in Python
-[x] Get list of running processes
-[x] Print process name only
-[x] Print PID + process name
+def get_processes():
+    """Get running processes and store them as a list of dictionaries"""
+    
+    procs = []
 
-learn out comes
-process_iter() accepts ONE argument only (a list), not multiple strings
+    for p in psutil.process_iter(["pid", "name", "cpu_percent", "memory_info"]):
+        try:
+            info = p.info
 
-'''
+            mem_mb = (info["memory_info"].rss / 1024 / 1024) if info["memory_info"] else 0.0
+            cpu = info["cpu_percent"] or 0.0
+            name = info["name"] or "unknown"
 
-# Full process objects (heavy)
-def full_process_objects():
-    for process in psutil.process_iter():
-        print(process)
+            procs.append({
+                "pid": info["pid"],
+                "name": name,
+                "cpu": cpu,
+                "mem": mem_mb,
+            })
 
+        except (psutil.AccessDenied, psutil.NoSuchProcess):
+            pass  # skip protected or vanished processes
 
-# Only process name
-def process_names_only():
-    for p in psutil.process_iter(['name']):
-        print(p.info['name'])
+    return procs
 
-
-# PID + Name (your goal)
-def pid_and_name():
-    for p in psutil.process_iter(['pid', 'name']):
-        print(p.info)
-
-
-full_process_objects()
-process_names_only()
-pid_and_name()
+    
