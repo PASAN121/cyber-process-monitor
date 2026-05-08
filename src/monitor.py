@@ -47,7 +47,7 @@ def get_processes():
 
             #CPU calculation     
              # Normalize CPU: Divide by number of cores so max is 100%
-            cpu_raw = info["cpu_percent(interval=None)"] or 0.0
+            cpu_raw = info["cpu_percent"] or 0.0
             cpu_p =cpu_raw/NumCores
              #CPU status
             cpu_status=get_status(cpu_p)
@@ -93,6 +93,7 @@ def run_dashboard():
         print(f"{proc['pid']:<10}{proc['name']:<55}{proc['cpu']:<10}{proc['mem']:<15}{proc['status']:<10}")
     
     print("\nPress Ctrl+C to exit.")
-    datetime.datetime.sleep(5)  # Refresh every 5 seconds
+    time.sleep(2)  # Refresh every 2 seconds
+
 if __name__ == "__main__":
     run_dashboard()
