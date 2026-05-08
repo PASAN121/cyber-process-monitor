@@ -25,4 +25,6 @@ def get_processes():
 
     return procs
 
-    
+total_ram = psutil.virtual_memory().total / (1024**3)
+cpu_cores = psutil.cpu_count(logical=True)
+
