@@ -7,9 +7,9 @@ NumCores=psutil.cpu_count(logical=True) #get the number of cores
 
 def get_status(percentage):
     
-    if percentage > 75:
+    if percentage > 15:
         return "ALERT"
-    elif percentage >50:
+    elif percentage >5:
         return "WARN"
     else:
         return "OK"
@@ -20,9 +20,12 @@ def get_processes():
     """Get running processes and store them as a list of dictionaries"""
     
     procs = []
+    process=list(psutil.process_iter(["pid", "name", "cpu_percent", "memory_info"]))
+    time.sleep(0.5)#allow cpu_percent to calculate over a short interval
+    for p in process:
 
-    for p in psutil.process_iter(["pid", "name", "cpu_percent", "memory_info"]):
         try:
+            cpu_raw = p.cpu_percent()
             info = p.info
             pid = info["pid"]
 
@@ -47,8 +50,8 @@ def get_processes():
 
             #CPU calculation     
              # Normalize CPU: Divide by number of cores so max is 100%
-            cpu_raw = info["cpu_percent"] or 0.0
-            cpu_p =cpu_raw/NumCores
+           
+            cpu_p =cpu_raw/NumCores 
              #CPU status
             cpu_status=get_status(cpu_p)
 
@@ -78,8 +81,9 @@ def get_processes():
 
 def run_dashboard():
     processes = get_processes() #get the process data
+    status_orders = {"ALERT": 0, "WARN": 1, "OK": 2} #define status order for sorting
     #sort the processes by status and CPU usage
-    processes=sorted(processes, key=lambda x: (x["status"], x["cpu"]), reverse=True) 
+    processes=sorted(processes, key=lambda x: (status_orders[x["status"]], x["cpu"]), reverse=True) 
    
     #clear the console for a fresh dashboard displa 
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -96,4 +100,10 @@ def run_dashboard():
     time.sleep(2)  # Refresh every 2 seconds
 
 if __name__ == "__main__":
-    run_dashboard()
+    while True:
+        try:
+            run_dashboard()
+        except KeyboardInterrupt:
+            print("\nExiting dashboard.")
+            break 
+            
