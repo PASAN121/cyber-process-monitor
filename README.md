@@ -39,7 +39,7 @@ A terminal-based Windows process monitor built in Python — inspired by Windows
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/cyber-process-monitor.git
+git clone https://github.com/PASAN121/cyber-process-monitor.git
 cd cyber-process-monitor
 
 # 2. Install dependencies
